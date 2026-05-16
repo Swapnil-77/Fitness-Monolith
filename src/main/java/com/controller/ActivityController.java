@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "**")
 @RequestMapping("/api/activities")
 @RequiredArgsConstructor
 public class ActivityController {
