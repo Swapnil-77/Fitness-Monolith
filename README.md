@@ -1,6 +1,6 @@
 # 🚀 Fitness Tracker Backend System
 
-A scalable and secure backend system built using Spring Boot that enables users to track fitness activities and receive personalized recommendations. Designed with production-level architecture and authentication mechanisms..
+A scalable and secure backend system built using Spring Boot that enables users to track fitness activities and receive personalized recommendations. Designed with production-level architecture and authentication mechanisms.
 
 ---
 
