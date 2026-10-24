@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitFlow — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dashboard-page">
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <div class="logo">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">FitFlow</span>
+      </div>
+      <div class="nav-tabs">
+        <button class="nav-tab active" onclick="showPage('activities')">🏋️ Workouts</button>
+        <button class="nav-tab" onclick="showPage('recommendations')">🤖 Recommendations</button>
+      </div>
+      <div class="nav-right">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <span class="user-email" id="userEmail">user@email.com</span>
+        <button class="btn-logout" onclick="logout()">Sign out</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ========== ACTIVITIES PAGE ========== -->
+  <main class="dashboard-main" id="page-activities">
+
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">My Workouts</h1>
+        <p class="page-sub">Track every rep, every run, every win.</p>
+      </div>
+      <button class="btn-primary" onclick="openModal()">+ Log Activity</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon">🏃</div>
+        <div class="stat-info">
+          <span class="stat-value" id="totalActivities">—</span>
+          <span class="stat-label">Total Activities</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⏱</div>
+        <div class="stat-info">
+          <span class="stat-value" id="totalDuration">—</span>
+          <span class="stat-label">Total Minutes</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-info">
+          <span class="stat-value" id="totalCalories">—</span>
+          <span class="stat-label">Calories Burned</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📅</div>
+        <div class="stat-info">
+          <span class="stat-value" id="lastActivity">—</span>
+          <span class="stat-label">Last Workout</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Activity List -->
+    <div class="section-header">
+      <h2 class="section-title">Activity Log</h2>
+      <button class="btn-ghost" onclick="loadActivities()">↻ Refresh</button>
+    </div>
+    <div id="activityList" class="activity-grid">
+      <div class="loading-state">Loading your activities…</div>
+    </div>
+
+  </main>
+
+  <!-- ========== RECOMMENDATIONS PAGE ========== -->
+  <main class="dashboard-main hidden" id="page-recommendations">
+
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">AI Recommendations</h1>
+        <p class="page-sub">Personalized fitness advice powered by AI.</p>
+      </div>
+      <button class="btn-primary" onclick="generateRecommendation()">
+        <span id="genBtnLabel">⚡ Generate New</span>
+      </button>
+    </div>
+
+    <!-- User Recommendations -->
+    <div class="section-header">
+      <h2 class="section-title">Your Recommendations</h2>
+      <button class="btn-ghost" onclick="loadUserRecommendations()">↻ Refresh</button>
+    </div>
+    <div id="recommendationList" class="rec-grid">
+      <div class="loading-state">Loading recommendations…</div>
+    </div>
+
+  </main>
+
+  <!-- ========== ACTIVITY MODAL ========== -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Log New Activity</h3>
+        <button class="modal-close" onclick="closeModalDirect()">✕</button>
+      </div>
+
+      <div class="activity-type-selector">
+        <button class="type-chip active" data-type="RUNNING"      onclick="selectType(this)">🏃 Running</button>
+        <button class="type-chip"        data-type="CYCLING"      onclick="selectType(this)">🚴 Cycling</button>
+        <button class="type-chip"        data-type="SWIMMING"     onclick="selectType(this)">🏊 Swimming</button>
+        <button class="type-chip"        data-type="YOGA"         onclick="selectType(this)">🧘 Yoga</button>
+        <button class="type-chip"        data-type="WEIGHTLIFTING" onclick="selectType(this)">🏋️ Weights</button>
+        <button class="type-chip"        data-type="WALKING"      onclick="selectType(this)">🚶 Walking</button>
+      </div>
+
+      <input type="hidden" id="type" value="RUNNING">
+
+      <div class="modal-fields">
+        <div class="form-group">
+          <label for="duration">Duration (minutes)</label>
+          <div class="input-wrap">
+            <span class="input-icon">⏱</span>
+            <input type="number" id="duration" placeholder="e.g. 30" min="1">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="calories">Calories Burned</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔥</span>
+            <input type="number" id="calories" placeholder="e.g. 250" min="1">
+          </div>
+        </div>
+      </div>
+
+      <div id="modalToast" class="toast hidden"></div>
+
+      <div class="modal-footer">
+        <button class="btn-ghost" onclick="closeModalDirect()">Cancel</button>
+        <button class="btn-primary" onclick="addActivity()">Save Activity →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== RECOMMENDATION DETAIL MODAL ========== -->
+  <div class="modal-overlay" id="recModalOverlay" onclick="closeRecModal(event)">
+    <div class="modal-card modal-card-wide">
+      <div class="modal-header">
+        <h3>Recommendation Detail</h3>
+        <button class="modal-close" onclick="closeRecModalDirect()">✕</button>
+      </div>
+      <div id="recModalContent" class="rec-detail-content">
+        <div class="loading-state">Loading…</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    // Page init
+    document.addEventListener('DOMContentLoaded', () => {
+      const email = localStorage.getItem('userEmail') || 'User';
+      document.getElementById('userEmail').textContent = email;
+      document.getElementById('userAvatar').textContent = email[0].toUpperCase();
+      loadActivities();
+    });
+
+    // Page switching
+    function showPage(page) {
+      document.querySelectorAll('.dashboard-main').forEach(p => p.classList.add('hidden'));
+      document.getElementById('page-' + page).classList.remove('hidden');
+      document.querySelectorAll('.nav-tab').forEach((t, i) => {
+        t.classList.toggle('active', (i === 0 && page === 'activities') || (i === 1 && page === 'recommendations'));
+      });
+      if (page === 'recommendations') loadUserRecommendations();
+    }
+
+    function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+
+    // Activity modal
+    function openModal() { document.getElementById('modalOverlay').classList.add('active'); }
+    function closeModal(e) { if (e.target === document.getElementById('modalOverlay')) closeModalDirect(); }
+    function closeModalDirect() { document.getElementById('modalOverlay').classList.remove('active'); }
+    function selectType(btn) {
+      document.querySelectorAll('.type-chip').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('type').value = btn.dataset.type;
+    }
+
+    // Rec modal
+    function openRecModal() { document.getElementById('recModalOverlay').classList.add('active'); }
+    function closeRecModal(e) { if (e.target === document.getElementById('recModalOverlay')) closeRecModalDirect(); }
+    function closeRecModalDirect() { document.getElementById('recModalOverlay').classList.remove('active'); }
+
+    // Toast
+    window._showModalToast = function(msg, type = 'error') {
+      const t = document.getElementById('modalToast');
+      t.textContent = msg;
+      t.className = `toast ${type}`;
+      setTimeout(() => t.className = 'toast hidden', 3000);
+    };
+
+    // Stats
+    function updateStats(activities) {
+      if (!activities || !activities.length) return;
+      document.getElementById('totalActivities').textContent = activities.length;
+      document.getElementById('totalDuration').textContent = activities.reduce((s, a) => s + (a.duration || 0), 0);
+      document.getElementById('totalCalories').textContent = activities.reduce((s, a) => s + (a.caloriesBurned || 0), 0).toLocaleString();
+      const last = activities[activities.length - 1];
+      document.getElementById('lastActivity').textContent = last && last.createdAt
+        ? new Date(last.createdAt).toLocaleDateString('en', { month: 'short', day: 'numeric' })
+        : 'Today';
+    }
+  </script>
+</body>
+</html>

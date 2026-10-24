@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitFlow — Login</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="auth-page">
+
+  <div class="auth-split">
+
+    <!-- Left Panel -->
+    <div class="auth-brand">
+      <div class="brand-inner">
+        <div class="logo">
+          <span class="logo-icon">⚡</span>
+          <span class="logo-text">FitFlow</span>
+        </div>
+        <h1 class="brand-headline">Track. Push.<br><em>Evolve.</em></h1>
+        <p class="brand-sub">Your personal fitness command center. Log workouts, burn calories, and get AI-powered recommendations.</p>
+        <div class="brand-stats">
+          <div class="stat-pill">
+            <span class="stat-num">12k+</span>
+            <span class="stat-label">Active Users</span>
+          </div>
+          <div class="stat-pill">
+            <span class="stat-num">3.2M</span>
+            <span class="stat-label">Workouts Logged</span>
+          </div>
+        </div>
+        <div class="brand-decoration">
+          <div class="deco-ring ring-1"></div>
+          <div class="deco-ring ring-2"></div>
+          <div class="deco-ring ring-3"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="auth-form-panel">
+      <div class="auth-card">
+
+        <div class="auth-card-header">
+          <h2 id="authTitle">Welcome back</h2>
+          <p id="authSubtitle">Sign in to your FitFlow account</p>
+        </div>
+
+        <div class="tab-group">
+          <button class="tab-btn active" onclick="switchTab('login')">Sign In</button>
+          <button class="tab-btn" onclick="switchTab('register')">Register</button>
+          <div class="tab-indicator" id="tabIndicator"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email address</label>
+          <div class="input-wrap">
+            <span class="input-icon">✉</span>
+            <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-wrap">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="password" placeholder="••••••••">
+            <button class="toggle-pw" onclick="togglePassword()" type="button">👁</button>
+          </div>
+        </div>
+
+        <div id="toast" class="toast hidden"></div>
+
+        <button class="btn-primary full-width" id="authBtn" onclick="handleAuth()">
+          <span id="btnLabel">Sign In</span>
+          <span class="btn-arrow">→</span>
+        </button>
+
+        <p class="auth-switch">
+          <span id="switchText">Don't have an account?</span>
+          <a href="#" onclick="toggleTab()"><span id="switchLink">Create one</span></a>
+        </p>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    let currentTab = 'login';
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.tab-btn').forEach((b, i) => {
+        b.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'register'));
+      });
+      document.getElementById('tabIndicator').style.transform =
+        tab === 'register' ? 'translateX(100%)' : 'translateX(0)';
+      if (tab === 'login') {
+        document.getElementById('authTitle').textContent = 'Welcome back';
+        document.getElementById('authSubtitle').textContent = 'Sign in to your FitFlow account';
+        document.getElementById('btnLabel').textContent = 'Sign In';
+        document.getElementById('switchText').textContent = "Don't have an account?";
+        document.getElementById('switchLink').textContent = 'Create one';
+      } else {
+        document.getElementById('authTitle').textContent = 'Get started';
+        document.getElementById('authSubtitle').textContent = 'Create your free FitFlow account';
+        document.getElementById('btnLabel').textContent = 'Create Account';
+        document.getElementById('switchText').textContent = 'Already have an account?';
+        document.getElementById('switchLink').textContent = 'Sign in';
+      }
+    }
+
+    function toggleTab() { switchTab(currentTab === 'login' ? 'register' : 'login'); }
+    function handleAuth() { currentTab === 'login' ? login() : register(); }
+    function togglePassword() {
+      const pw = document.getElementById('password');
+      pw.type = pw.type === 'password' ? 'text' : 'password';
+    }
+    window._showToast = function(msg, type = 'error') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = `toast ${type}`;
+      setTimeout(() => t.className = 'toast hidden', 3500);
+    };
+  </script>
+</body>
+</html>
